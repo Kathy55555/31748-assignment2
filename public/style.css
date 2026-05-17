@@ -17,8 +17,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-}
 
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+}
 .auth-box input {
   padding: 10px;
   border-radius: 8px;
@@ -41,7 +45,12 @@ body {
   border-radius: 20px;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
 }
-
+hr {
+  border: none;
+  height: 1px;
+  background: rgba(0,0,0,0.1);
+  margin: 15px 0;
+}
 h1 {
   text-align: center;
   margin-top: 0;
