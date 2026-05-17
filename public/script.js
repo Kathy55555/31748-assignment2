@@ -135,12 +135,13 @@ async function fetchCards(search = "") {
   if (currentMode === "manage") renderManage(cards);
   else startStudyMode(cards);
 }
-
+cardsContainer.classList.remove("no-cards");
 //MANAGE MODE
 function renderManage(cards) {
   cardsContainer.innerHTML = "";
 
   if (!cards.length) {
+    cardsContainer.classList.add("no-cards");
     cardsContainer.innerHTML = `<div class="center-message">No cards</div>`;
     return;
   }
@@ -245,12 +246,13 @@ studyBtn.addEventListener("click", () => {
   currentMode = "study";
   fetchCards();
 });
-
+cardsContainer.classList.remove("no-cards");
 //STUDY MODE
 function startStudyMode(cards) {
   cardsContainer.innerHTML = "";
 
   if (!cards.length) {
+    cardsContainer.classList.add("no-cards");
     cardsContainer.innerHTML = `<div class="center-message">No cards</div>`;
     return;
   }
