@@ -135,7 +135,7 @@ async function fetchCards(search = "") {
   if (currentMode === "manage") renderManage(cards);
   else startStudyMode(cards);
 }
-cardsContainer.classList.remove("no-cards");
+
 //MANAGE MODE
 function renderManage(cards) {
   cardsContainer.innerHTML = "";
@@ -239,14 +239,24 @@ addBtn.addEventListener("click", async () => {
 //MODE SWITCH
 manageBtn.addEventListener("click", () => {
   currentMode = "manage";
+
+  app.classList.remove("study-mode");
+  manageBtn.classList.add("active-mode");
+  studyBtn.classList.remove("active-mode");
+
   fetchCards();
 });
 
 studyBtn.addEventListener("click", () => {
   currentMode = "study";
+
+  app.classList.add("study-mode");
+  studyBtn.classList.add("active-mode");
+  manageBtn.classList.remove("active-mode");
+
   fetchCards();
 });
-cardsContainer.classList.remove("no-cards");
+
 //STUDY MODE
 function startStudyMode(cards) {
   cardsContainer.innerHTML = "";
@@ -277,7 +287,13 @@ function showCard() {
     <button class="complete">Done</button>
   `;
 
-  div.querySelector(".complete").addEventListener("click", () => {
+  div.addEventListener("click", (e) => {
+    if (e.target.classList.contains("complete")) return;
+    div.classList.toggle("flipped");
+  });
+
+  div.querySelector(".complete").addEventListener("click", (e) => {
+    e.stopPropagation();
     studyCards.shift();
     showCard();
   });
