@@ -274,6 +274,14 @@ function startStudyMode(cards) {
 function showCard() {
   cardsContainer.innerHTML = "";
 
+  if (studyCards.length === 0) {
+    const msg = document.createElement("div");
+    msg.className = "center-message";
+    msg.textContent = "All cards completed!";
+    cardsContainer.appendChild(msg);
+    return;
+  }
+
   const card = studyCards[0];
 
   const div = document.createElement("div");
