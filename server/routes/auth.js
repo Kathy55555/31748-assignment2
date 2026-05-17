@@ -5,9 +5,9 @@ const User = require("../models/User");
 
 const router = express.Router();
 
-const JWT_SECRET = "your_secret_key"; // we will improve later
+const JWT_SECRET = "your_secret_key"; 
 
-// REGISTER
+//REGISTER
 router.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -33,7 +33,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// LOGIN
+//LOGIN
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
