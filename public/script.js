@@ -27,25 +27,33 @@ function getToken() {
   return localStorage.getItem("token");
 }
 
-//INIT APP STATE
-function initApp() {
-  const token = getToken();
+function setState(loggedIn) {
+  auth.classList.toggle("hidden", loggedIn);
+  app.classList.toggle("hidden", !loggedIn);
 
-  if (token && token !== "undefined" && token !== "null") {
-    auth.style.display = "none";
-    app.style.display = "block";
-    fetchCards();
-  } else {
-    auth.style.display = "block";
-    app.style.display = "none";
+  if (loggedIn) fetchCards();
+}
+
+function initApp() {
+  const token = localStorage.getItem("token");
+
+  if (!token || token === "undefined" || token === "null") {
+    auth.classList.remove("hidden");
+    app.classList.add("hidden");
+    return;
   }
+
+  auth.classList.add("hidden");
+  app.classList.remove("hidden");
+
+  fetchCards();
 }
 
 document.addEventListener("DOMContentLoaded", initApp);
 
 //REGISTER
 registerBtn.addEventListener("click", async () => {
-  await fetch("/api/auth/register", {
+  const res = await fetch("/api/auth/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -54,6 +62,15 @@ registerBtn.addEventListener("click", async () => {
       password: regPassword.value
     })
   });
+
+  const data = await res.json();
+
+  console.log("REGISTER:", data);
+
+  if (!res.ok) {
+    alert(data.message || "Register failed");
+    return;
+  }
 
   alert("Registered successfully");
 });
@@ -71,28 +88,47 @@ loginBtn.addEventListener("click", async () => {
 
   const data = await res.json();
 
+  console.log("STATUS:", res.status);
+  console.log("RESPONSE:", data);
+
+  if (!res.ok) {
+    alert(data.message || "Login failed");
+    return;
+  }
+
   if (!data.token) {
-    alert("Login failed");
+    alert("No token received");
     return;
   }
 
   localStorage.setItem("token", data.token);
 
-  auth.style.display = "none";
-  app.style.display = "block";
+auth.style.display = "none";
+app.style.display = "block";
+
+fetchCards();
 
   fetchCards();
 });
-
 //FETCH CARDS
 async function fetchCards(search = "") {
   const token = getToken();
+
+  if (!token) {
+    setState(false);
+    return;
+  }
 
   const res = await fetch(`/api/flashcards?search=${search}`, {
     headers: {
       Authorization: "Bearer " + token
     }
   });
+
+  if (!res.ok) {
+    showAuth();
+    return;
+  }
 
   const cards = await res.json();
 
@@ -165,6 +201,11 @@ addBtn.addEventListener("click", async () => {
 
   const token = getToken();
 
+  if (!token) {
+    setState(false);
+    return;
+  }
+
   if (editingId) {
     await fetch(`/api/flashcards/${editingId}`, {
       method: "PUT",
@@ -205,7 +246,7 @@ studyBtn.addEventListener("click", () => {
   fetchCards();
 });
 
-//STUDY MODE 
+//STUDY MODE
 function startStudyMode(cards) {
   cardsContainer.innerHTML = "";
 
