@@ -4,12 +4,12 @@ const cors = require("cors");
 const path = require("path");
 
 const app = express();
-
+const authRoutes = require("./routes/auth");
 // Middleware
 app.use(cors());
 app.use(express.json()); // for parsing JSON in requests
 app.use(express.static(path.join(__dirname, "../public"))); // serve frontend
-
+app.use("/api/auth", authRoutes);
 // Connect to MongoDB (Mongoose 7+)
 mongoose.connect("mongodb://127.0.0.1:27017/flashcards")
   .then(() => console.log("MongoDB connected"))
